@@ -14,6 +14,7 @@ APIs for connected devices
 HOW DO APUIs WORK : APIs work by sharing data between applications, systems ,and devices. This happens through request and response cycle.
 The request is sent to the API, which retrieves the data and returns it to the user
 
-1. API client :
+1. API client : The client responsible for starting the convo by sending requests in different modes to API server
+2. API request : 
 
 '''
