@@ -27,4 +27,10 @@ Different Types of APIs
 - Private APIs  -Public APIs  -Partner APIs
 
 '''
-form fastapi import FastAPI
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def get():
+    return {"message": "Hello World"}
