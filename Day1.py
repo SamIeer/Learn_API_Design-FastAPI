@@ -21,9 +21,10 @@ The request is sent to the API, which retrieves the data and returns it to the u
 
 What are the benefits of APIs
 APIs connect various software systems, applications, and devices by allowing them to communicate with one another.
-  -Automation  -Innovation  -Security  -Cost efficieny
+-Automation  -Innovation  -Security  -Cost efficieny
 
 Different Types of APIs
 - Private APIs  -Public APIs  -Partner APIs
 
 '''
+form fastapi import FastAPI
