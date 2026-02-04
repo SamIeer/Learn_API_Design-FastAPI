@@ -27,32 +27,33 @@ Different Types of APIs
 - Private APIs  -Public APIs  -Partner APIs
 
 '''
+# HTTP Reuest Methods
+# HTTP request methodṡhave their own verbs attached to the CRUD operation that we need to use within our application
+'''
+Create -> POST
+Read -> GET
+Update -> PUT
+Delete -> DELETE
+'''
+
+MOVIES = [
+    {"title": "Inception", "director": "Christopher Nolan", "genre": "Sci-Fi"},
+    {"title": "The Godfather", "director": "Francis Ford Coppola", "genre": "Crime"},
+    {"title": "Spirited Away", "director": "Hayao Miyazaki", "genre": "Animation"},
+    {"title": "Parasite", "director": "Bong Joon-ho", "genre": "Thriller"},
+    {"title": "Pulp Fiction", "director": "Quentin Tarantino", "genre": "Drama"},
+]
+
+'''
+GET HTTP Request Method
+The GET request method is used to read data from the server without making any changes to it
+
+'''
 from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
+@app.get("/movies")
+def read_all_movies():
+    return MOVIES
 
-@app.get("/items/{item_id}")
-async def read_item(item_id):
-    return {"item_id": item_id}
-
-from enum import Enum
-from fastapi import FastAPI
-
-class ModelName(str, Enum):
-    alexnet = "alesnet"
-    resnet = "resnet"
-    lenet = "lenet"
-
-app = FastAPI()
-
-@app.get("/models/{model_name}")
-async def get_model(model_name: ModelName):
-    if model_name is ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW!"}
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-    return {"model_name": model_name, "message": "Have some residuals"}
