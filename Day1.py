@@ -59,3 +59,18 @@ app = FastAPI()
 def read_all_movies():
     return MOVIES
 
+# Path and Query Parameters
+'''
+Path Parameters: Path parameters are variables that are part of the URL path itself. They allow you to capture values directly from the URL
+Example URL: https://jsonplaceholder.typicode.com/posts/5
+From the URL we have: 
+Base URL: https://jsonplaceholder.typicode.com
+Path: /posts/{id}
+Path parameter: id 
+Path parameter value: 5
+In FastAPI, path parameter id define using {}, which makes that part of the path dynamic
+By dynamic, we mean that we can change the value in that part of the URL, and FastAPI will capture it and pass it to our function
+'''
+@app.get("/movies/{title}") # title is a dynamic method
+def read_movie(title):
+    return {"Movie title": title}
