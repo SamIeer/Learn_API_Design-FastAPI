@@ -26,6 +26,7 @@ APIs connect various software systems, applications, and devices by allowing the
 Different Types of APIs
 - Private APIs  -Public APIs  -Partner APIs
 
+FastAPI has something call SwaggerUI that will allow us to see all of our API enpoints
 '''
 # HTTP Reuest Methods
 # HTTP request methodṡhave their own verbs attached to the CRUD operation that we need to use within our application
@@ -48,12 +49,13 @@ MOVIES = [
 GET HTTP Request Method
 The GET request method is used to read data from the server without making any changes to it
 
+uvicorn movies:app --reload  --> --reload the server restarts automatically when we save changes, so we just refresh the browser without rerunning the app
 '''
 from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/movies")
+@app.get("/movies")  # endpoint calle /movies which return the list of movies of every movie we currently have
 def read_all_movies():
     return MOVIES
 
