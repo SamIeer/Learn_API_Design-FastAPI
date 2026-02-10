@@ -140,3 +140,14 @@ def update_movie(updated_movie=Body()):
         if MOVIES[i].get("title").casefold() == updated_movie.get("title").casefold():
             MOVIES[i] = updated_movie
 
+# DELETE HTTP Request Method
+'''
+The DELETE request method is used to delete data. In th same manner as PUT request,
+we will delete a movie from the MOVIES list bu searching with title.
+'''
+@app.delete("/movies/delete_movies/{title}")
+def delete_movie(title: str):
+    for i in range(len(MOVIES)):
+        if MOVIES[i].get("title").casefold() == title.casefold():
+            MOVIES.pop(i)
+            break
