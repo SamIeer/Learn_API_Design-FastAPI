@@ -116,3 +116,14 @@ def read_genre_by_query(genre: str):
             movies_to_return.append(movie)  
     return movies_to_return                          
 
+# Post HTTP Request Method
+'''
+The POST request method is used to create data to the server. POST can have a body that has
+additional that GET does not have
+Post request has an additional area to be able to send data called the body.
+You can send data in th body that can be used by FastAPI. GET request can not have a body
+'''
+@app.post("/movies/create_movie")
+def create_movie(new_movie=Body()):
+    MOVIES.append(new_movie)
+
