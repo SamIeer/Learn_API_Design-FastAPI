@@ -75,3 +75,44 @@ By dynamic, we mean that we can change the value in that part of the URL, and Fa
 # def read_movie(title):
 #     return {"Movie title": title}
 
+# Order of Endpoint Declaration in FastAPI
+# In FastAPI the order of route declarations matters when path parameters.
+@app.get("/movies/{dynamic_param}")
+def read_all_movies(dynamic_param: str):
+    return {"movie title": dynamic_param}
+
+# @app.get("/movies/mymovie")
+# def read_favorite_movie():
+#     return {"movie title": "My favorite movie"}
+
+# The second route will never be reached because the dynamic one already captured the request
+
+# When we type a request that needs a space we are gping to use %20 instead of the space
+@app.get("/movies/{title}")
+def read_movie(title: str): # type is declared here
+    for movie in MOVIES:
+        if movie.get('title').casefold == title.casefold():
+            return movie
+# casefold() is similar to lower() method, bit the casefold() method is stronger, more aggressive
+
+# Path Parameters with Type Hints
+# we can define the type of the path parameter in the function using Python type hints. FastAPI will
+'''
+Convert the parameter to the specified type
+Validate the value before calling the function
+We are setting the path parameter title to be a string type. The validation is handled by pydantic
+'''
+
+# Query Parameters
+"""Query parameters are request parameters in the URL after a question mark(?). 
+Multiple parameters are separated by an ampersand(&)  
+In FastAPI, query parameters are simply function arguments that are not part of the path
+"""      
+@app.get("/movies/")   
+def read_genre_by_query(genre: str):
+    movies_to_return = []            
+    for movie in MOVIES:
+        if movie.get('genre').casefold() == genre.casefold():
+            movies_to_return.append(movie)  
+    return movies_to_return                          
+
