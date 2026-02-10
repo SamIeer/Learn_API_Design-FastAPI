@@ -51,7 +51,7 @@ The GET request method is used to read data from the server without making any c
 
 uvicorn movies:app --reload  --> --reload the server restarts automatically when we save changes, so we just refresh the browser without rerunning the app
 '''
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
 
 app = FastAPI()
 
@@ -71,6 +71,7 @@ Path parameter value: 5
 In FastAPI, path parameter id define using {}, which makes that part of the path dynamic
 By dynamic, we mean that we can change the value in that part of the URL, and FastAPI will capture it and pass it to our function
 '''
-@app.get("/movies/{title}") # title is a dynamic method
-def read_movie(title):
-    return {"Movie title": title}
+# @app.get("/movies/{title}") # title is a dynamic method
+# def read_movie(title):
+#     return {"Movie title": title}
+
