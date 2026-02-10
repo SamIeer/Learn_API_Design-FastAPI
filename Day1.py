@@ -151,3 +151,5 @@ def delete_movie(title: str):
         if MOVIES[i].get("title").casefold() == title.casefold():
             MOVIES.pop(i)
             break
+
+# Okay this is the whole CRUD opration we just did getting the understanding of FastAPI and RESTFUL api
