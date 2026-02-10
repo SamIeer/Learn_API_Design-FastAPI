@@ -127,3 +127,16 @@ You can send data in th body that can be used by FastAPI. GET request can not ha
 def create_movie(new_movie=Body()):
     MOVIES.append(new_movie)
 
+# PUT HTTP Request Method
+'''The PUT request method is used to update data. 
+PUT can have a body that has additional information that GET does not have
+An example of a body for a PUT is exacttly like the body of a POST. But we are 
+going to be able to change the genre or the director of the movie in our
+MOVIES list by looking at the title of the movie we want to update
+'''
+@app.put("/movies/update_movie")
+def update_movie(updated_movie=Body()):
+    for i in range(len(MOVIES)):
+        if MOVIES[i].get("title").casefold() == updated_movie.get("title").casefold():
+            MOVIES[i] = updated_movie
+
