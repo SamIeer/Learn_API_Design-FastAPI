@@ -87,3 +87,26 @@ Implementing pydantics in our project
 #     # Movie(**movie_request.model_dump()) : We just converting the request to Movie object
 #     MOVIES.append(new_movie)
 
+# More Pydantics Validation
+'''
+haven't added a validation to the movie's id 
+Id should be unique and we shouldn't be able to give id for a movie.
+Therfore, in order to add an id automatically that is greater than the last id by 1
+'''
+def find_movie_id(movie: Movie):
+    if (len(MOVIES) > 0): #If we have a movie in our MOVIE list
+        movie.id = MOVIES[-1].id + 1# add 1 to the last movie id 
+    else:
+        movie.id = 1 # if not set id to 1
+    return movie
+
+'''
+The find_movie_id() function will create id for us so whatever id you have in the request body, 
+it will overwrite it by giving the id greater than the last movie id by 1
+To make this functionality work, we need to use this function inside our post request
+'''
+@app.post("/create-movie")
+def create_movie(movie_request: MovieRequest):
+    new_movie = Movie(**movie_request.model_dump())
+    MOVIES.append(find_movie_id(new_movie))
+
