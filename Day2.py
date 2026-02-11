@@ -131,3 +131,15 @@ def read_movie_by_rating(movie_rating: float):
         if movie.rating == movie_rating:
             movie_to_return.append(movie)
     return movie_to_return
+
+
+# Updating a Movie 
+'''
+One thing you will notice using this end point is, when you add a movie in the request body to update,
+if you type in the id=1000 and try to update the movie, you will get status code 200 even though it didn't do anything.
+'''
+@app.put("/movies/update-movies")
+def update_movies(movies: MovieRequest):
+    for i in range(len(MOVIES)):
+        if MOVIES[i].id == movies.id:
+            MOVIES[i] = movies
