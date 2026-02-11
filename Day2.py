@@ -110,3 +110,24 @@ def create_movie(movie_request: MovieRequest):
     new_movie = Movie(**movie_request.model_dump())
     MOVIES.append(find_movie_id(new_movie))
 
+# FETCH MOVIE
+'''
+Fetching movies by ID -> return the movie with the specific id you provide
+'''
+@app.get("/movies/{movie_id}")
+def read_movie(movie_id: int):
+    for movie in MOVIES:
+        if movie.id == movie_id:
+            return movie
+        
+'''
+Fetching movie by rating ->  This will fetch movies by their rating
+We used a movies_to_return list here becuse there might be more than 1 movies with the same rating.
+'''
+@app.get("/movies/")
+def read_movie_by_rating(movie_rating: float):
+    movie_to_return = []
+    for movie in MOVIES:
+        if movie.rating == movie_rating:
+            movie_to_return.append(movie)
+    return movie_to_return
