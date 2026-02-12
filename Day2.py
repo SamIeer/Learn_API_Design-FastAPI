@@ -22,7 +22,7 @@ What are some common API use cases?
 - Improving organizational security and governace
 
 """
-from fastapi import Body, FastAPI
+from fastapi import Body, FastAPI, Path
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -127,9 +127,10 @@ def create_movie(movie_request: MovieRequest):
 # FETCH MOVIE
 '''
 Fetching movies by ID -> return the movie with the specific id you provide
+
 '''
 @app.get("/movies/{movie_id}")
-def read_movie(movie_id: int):
+def read_movie(movie_id: int = Path(gt=0)): # now if we searh a movie with id less than 0, get a 422 error
     for movie in MOVIES:
         if movie.id == movie_id:
             return movie
@@ -176,3 +177,5 @@ def delete_movies(movie_id: int):
         if MOVIES[i].id == movie_id:
             MOVIES.pop(i)
             break
+
+
