@@ -22,7 +22,7 @@ What are some common API use cases?
 - Improving organizational security and governace
 
 """
-from fastapi import Body, FastAPI, Path
+from fastapi import Body, FastAPI, Path, Query
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -140,7 +140,7 @@ Fetching movie by rating ->  This will fetch movies by their rating
 We used a movies_to_return list here becuse there might be more than 1 movies with the same rating.
 '''
 @app.get("/movies/")
-def read_movie_by_rating(movie_rating: float):
+def read_movie_by_rating(movie_rating: float = Query(gt=0, lt=6)):
     movie_to_return = []
     for movie in MOVIES:
         if movie.rating == movie_rating:
@@ -160,7 +160,7 @@ def update_movies(movies: MovieRequest):
             MOVIES[i] = movies
 
 @app.get("/movies/released_year/")
-def read_movies_by_released_year(released_date: int):
+def read_movies_by_released_year(released_date: int = Query(gt=1980, lt=2026)):
     movie_to_return = []
     for movie in MOVIES:
         if movie.released_year == released_date:
