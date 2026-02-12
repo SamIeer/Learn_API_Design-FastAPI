@@ -36,13 +36,15 @@ class Movie:
     director: str
     genre: str
     rating: int
+    released_year: int
 
-    def __init__(self, id, title, director, genre, rating):
+    def __init__(self, id, title, director, genre, rating, released_year):
         self.id = id
         self.title = title
         self.director = director
         self.genre = genre 
         self.rating = rating
+        self.released_year = released_year
 
 class MovieRequest(BaseModel):
     id: Optional[int] = None
@@ -50,7 +52,19 @@ class MovieRequest(BaseModel):
     director: str = Field(min_length=15)
     genre: str = Field(min_length=1, max_length=10)
     rating: float = Field(gt=-1, lt=6)
+    released_year: int = Field(gt=1980, lt=2026)
 
+model_config = {
+    "json_schema_extra":{
+        "example": {
+            "title": "A new movie",
+            "director": "A movie director",
+            "genre": "Comdey",
+            "rating": 5,
+            "released_date": 2020,
+        }
+    }
+}
 MOVIES = [
     Movie(1, 'Inception', 'Christopher Nolan', 'Sci-Fi', 4.8),
     Movie(2, 'The Godfather', 'Francis Ford Coppola', 'Crime', 4.7),
@@ -143,3 +157,14 @@ def update_movies(movies: MovieRequest):
     for i in range(len(MOVIES)):
         if MOVIES[i].id == movies.id:
             MOVIES[i] = movies
+
+# Delet∈ a Movie
+'''
+Let's create an endpoint that deletes a movie
+'''
+@app.delete("/movies/{movie_id}")
+def delete_movies(movie_id: int):
+    for i in range(len(MOVIES)):
+        if MOVIES[i].id == movie_id:
+            MOVIES.pop(i)
+            break
