@@ -158,6 +158,14 @@ def update_movies(movies: MovieRequest):
         if MOVIES[i].id == movies.id:
             MOVIES[i] = movies
 
+@app.get("/movies/released_year/")
+def read_movies_by_released_year(released_date: int):
+    movie_to_return = []
+    for movie in MOVIES:
+        if movie.released_year == released_date:
+            movie_to_return.append(movie)
+    return movie_to_return
+
 # Delet∈ a Movie
 '''
 Let's create an endpoint that deletes a movie
