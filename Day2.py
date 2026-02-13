@@ -22,7 +22,7 @@ What are some common API use cases?
 - Improving organizational security and governace
 
 """
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -155,6 +155,7 @@ if you type in the id=1000 and try to update the movie, you will get status code
 '''
 @app.put("/movies/update-movies")
 def update_movies(movies: MovieRequest):
+    movie_changed = False
     for i in range(len(MOVIES)):
         if MOVIES[i].id == movies.id:
             MOVIES[i] = movies
@@ -173,9 +174,14 @@ Let's create an endpoint that deletes a movie
 '''
 @app.delete("/movies/{movie_id}")
 def delete_movies(movie_id: int):
+    movie_deleted = False
     for i in range(len(MOVIES)):
         if MOVIES[i].id == movie_id:
             MOVIES.pop(i)
+            movie_deleted = True
             break
+    if not movie_deleted:
+        raise HTTPException(status_code=404, detail="Move not found")
 
 
+emfwefwe
