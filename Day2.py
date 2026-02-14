@@ -22,6 +22,7 @@ What are some common API use cases?
 - Improving organizational security and governace
 
 """
+from starlette import status
 from fastapi import Body, FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -74,7 +75,7 @@ MOVIES = [
 ]
 
 # Get HTTP request for reading the data from server
-@app.get("/movies")
+@app.get("/movies", status_code=status.HTTP_200_OK)
 def read_all_movies():
     return MOVIES
 
@@ -119,7 +120,7 @@ The find_movie_id() function will create id for us so whatever id you have in th
 it will overwrite it by giving the id greater than the last movie id by 1
 To make this functionality work, we need to use this function inside our post request
 '''
-@app.post("/create-movie")
+@app.post("/create-movie",status_code=status.HTTP_201_CREATED)
 def create_movie(movie_request: MovieRequest):
     new_movie = Movie(**movie_request.model_dump())
     MOVIES.append(find_movie_id(new_movie))
@@ -129,18 +130,18 @@ def create_movie(movie_request: MovieRequest):
 Fetching movies by ID -> return the movie with the specific id you provide
 
 '''
-@app.get("/movies/{movie_id}")
+@app.get("/movies/{movie_id}",status_code=status.HTTP_200_OK)
 def read_movie(movie_id: int = Path(gt=0)): # now if we searh a movie with id less than 0, get a 422 error
     for movie in MOVIES:
         if movie.id == movie_id:
             return movie
-    raise HTTPException(status_code=404, detail="Move not found")
+    raise HTTPException(status_code=404, detail="Move not found") # Now, passing an id of 3000 will raise an exception
         
 '''
 Fetching movie by rating ->  This will fetch movies by their rating
 We used a movies_to_return list here becuse there might be more than 1 movies with the same rating.
 '''
-@app.get("/movies/")
+@app.get("/movies/", status_code=status.HTTP_200_OK)
 def read_movie_by_rating(movie_rating: float = Query(gt=0, lt=6)):
     movie_to_return = []
     for movie in MOVIES:
@@ -154,14 +155,16 @@ def read_movie_by_rating(movie_rating: float = Query(gt=0, lt=6)):
 One thing you will notice using this end point is, when you add a movie in the request body to update,
 if you type in the id=1000 and try to update the movie, you will get status code 200 even though it didn't do anything.
 '''
-@app.put("/movies/update-movies")
+@app.put("/movies/update-movies",status_code=status.HTTP_204_NO_CONTENT)
 def update_movies(movies: MovieRequest):
     movie_changed = False
     for i in range(len(MOVIES)):
         if MOVIES[i].id == movies.id:
             MOVIES[i] = movies
+    if not movie_changed:
+        raise HTTPException(status_code=404, detail="Move not found")
 
-@app.get("/movies/released_year/")
+@app.get("/movies/released_year/", status_code=status.HTTP_200_OK)
 def read_movies_by_released_year(released_date: int = Query(gt=1980, lt=2026)):
     movie_to_return = []
     for movie in MOVIES:
@@ -173,8 +176,8 @@ def read_movies_by_released_year(released_date: int = Query(gt=1980, lt=2026)):
 '''
 Let's create an endpoint that deletes a movie
 '''
-@app.delete("/movies/{movie_id}")
-def delete_movies(movie_id: int):
+@app.delete("/movies/{movie_id}",status_code=status.HTTP_204_NO_CONTENT)
+def delete_movies(movie_id: int ):
     movie_deleted = False
     for i in range(len(MOVIES)):
         if MOVIES[i].id == movie_id:
