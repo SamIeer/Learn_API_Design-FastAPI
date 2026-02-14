@@ -134,6 +134,7 @@ def read_movie(movie_id: int = Path(gt=0)): # now if we searh a movie with id le
     for movie in MOVIES:
         if movie.id == movie_id:
             return movie
+    raise HTTPException(status_code=404, detail="Move not found")
         
 '''
 Fetching movie by rating ->  This will fetch movies by their rating
@@ -182,6 +183,3 @@ def delete_movies(movie_id: int):
             break
     if not movie_deleted:
         raise HTTPException(status_code=404, detail="Move not found")
-
-
-emfwefwe
