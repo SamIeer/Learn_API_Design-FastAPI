@@ -70,15 +70,28 @@ def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
 from pydantic import BaseModel, Field
 
 # Request model for creating a new todo 
+'''
+The TodoRequest Model : we created a Pydantic model called TodoRequest. This model defines the structure and validation rules for the data 
+we expect when creating a new todo.  Note: we don't include id here because the database automatically generates it as the primary key
+'''
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3)
     description: str = Field(min_length=3, max_length=100)
     priority: int = Field(gt=0, it=6)
     complete: bool
 
+'''
+Defines a POST endpoint at /todo.
+status_code=status.HTTP_201_CREATED -> tells swagger UI(and client) that this endpoint creates a new respurces
+'''
 @app.post("/todo", status_code=status.HTTP_201_CREATED)
+
+# db: db_dependency -> injects a database session using our dependency injection.
+#todo_request: TodoRequest -> FastAPI automatically validates the following JSON request against out Pydantic model 
 def create_todo(db: db_dependency, todo_request: TodoRequest):
     todo_model = Todos(**todo_request.model_dump())
 
+# db.add(todo_model) -> Prepares the new todo to be inserted into the database
+# db.commit() -> finalizes the transaction and saves the todo.
     db.add(todo_model)
     db.commit()
