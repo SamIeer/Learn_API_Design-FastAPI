@@ -95,3 +95,25 @@ def create_todo(db: db_dependency, todo_request: TodoRequest):
 # db.commit() -> finalizes the transaction and saves the todo.
     db.add(todo_model)
     db.commit()
+
+'''
+Updating the To-Do
+create a PUT ENdpoint that updated an existing todo in the database
+'''
+@app.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+def update_todo(db: db_dependency, todo_request: TodoRequest, todo_id: int = Path(gt=0)):
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+    if todo_model is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    '''
+    Updates each field of the existing todo with the new values from the request.
+    The todo_request comes from our TodoRequest Pydantic model, which validates the input before it even reaches this function.
+    '''
+    todo_model.title = todo_request.title
+    todo_model.description = todo_request.description
+    todo_model.priority = todo_request.priority
+    todo_model.complete = todo_request.complete
+
+    db.add(todo_model)
+    db.commit()
