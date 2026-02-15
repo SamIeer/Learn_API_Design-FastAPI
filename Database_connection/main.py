@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Path, status
 from sqlalchemy.orm import Session
 import models
 from models import Todos
@@ -40,3 +40,28 @@ Without dependencies, we sould have to mabually create and close the database se
 With dependencies, we write once and reuse everywhere.
 makes code : Cleaner , Easier to test, Less error - prone
 '''
+# GET TOdo by ID
+'''
+The endpoint path is /todo/{todo_id}
+{todo_id} is a path parameter -> when the client makes a request like /todo/3, the value 3 is passed to the function
+todo_id: int = Path(gt =0):
+Ensure todo_id must be an integer, gt=0 means it must be greater than zero, if a user tries /todo/0 or /todo/-5, FastAPI automatically raises a validation error
+'''
+@app.get("/todo/{todo_id}", status_code=status.HTTP_200_OK) # Status codes -> if request succeeds, it returns HTTP 200 OK, if the todo doesn't exist, we raise a 404 Not Found error.
+def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
+    '''
+    Querying the database
+    Queries the Todos table for a reocrd where id == todo_id.
+    .first() return the first matching record (or None if not found)
+    Since id is a primary key, there can only be one match
+    '''
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+    '''
+    If a todo is found, return it.
+    if not, raise an HTTPException with:
+    status_code=404 -> Not Found
+    detail = "Todo not found" -> error message returned to the client
+    '''
+    if todo_model is not None:
+        return todo_model
+    raise HTTPException(status_code=404, detail="Todo not found")
