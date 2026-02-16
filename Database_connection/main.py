@@ -117,3 +117,18 @@ def update_todo(db: db_dependency, todo_request: TodoRequest, todo_id: int = Pat
 
     db.add(todo_model)
     db.commit()
+
+# Deleting a To-Do
+'''
+We'll create a DELETE endpoint that removes a todo from the database
+'''
+@app.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_todo(db: db_dependency, todo_id: int = Path(gt=0)): # Accepts the todo ID as part of the path(/todo/3) , gt=0 ensures the ID must be greater than zero
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).first() # Queries the database for the todo with the given id , .first() will return the todo if found, otherwise NOne
+
+# Handling missing todos -> if the todo doesn't exist, raise a 404 Not Found error, This prevents us from trying to delete something that doesn't exist
+    if todo_model is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    db.query(Todos).filter(Todos.id == todo_id).delete() # Filters the todo by ID again and deletes it
+    db.commit() # finalizes the change and removes the record permanently from the database
