@@ -1,3 +1,8 @@
+'''
+Only responsible for starting the application
+includes routers (auth and todos) so all endpoints are available in Swagger UI uder one app
+We now have cleaner, scalable and maintainable code
+'''
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, Path, status
 from sqlalchemy.orm import Session
