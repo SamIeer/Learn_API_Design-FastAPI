@@ -21,3 +21,14 @@ class Todos(Base):
     description: Mapped[int] = mapped_column(String(255))
     priority: Mapped[int] = mapped_column(Integer, nullable=False)
     complete: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Foreign key: connects todo to a user
+    Owner_id = Column(Integer, ForeignKey("users.id"))
+
+'''
+Todos Table Update 
+Added owner_id 
+This makes a foreign key relationship
+each todo belongs to one user
+connects todos.owner-id -> users.id
+'''
