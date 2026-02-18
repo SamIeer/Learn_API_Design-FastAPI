@@ -4,12 +4,16 @@ from pydantic import BaseModel
 
 from typing import Annotated
 from sqlalchemy.orm import session
+from jose import jwt 
+from datetime import datetime, timedelta, timezone
 
 from database import sessionLocal
 from models import Users
 
 from passlib.context import CryptContext
 
+SECRET_KEY = '1c13d4dc939b74a4f82b3e9b80c6aee6067f088ae924278a548cd806b1c24e80'
+ALGORITHM = 'HS256'
 '''
 Why Use APIRouter
 Keeps your project organinsed by seperating logic into differnt files.
@@ -37,7 +41,7 @@ def authenticate_user(username: str, password: str, db):
         return False
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
-    return True
+    return user
 
 db_dependency = Annotated[session, Depends(get_db)]
 # We'll define a Pydantic model to valudare the incoming request
@@ -49,6 +53,11 @@ class CreateUserRequest(BaseModel):
     last_name: str
     password: str
     role: str
+
+# Token Model   --> This pydantic mode defines the structure of the JWT response
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 '''
 Recieves a validate createuserrequest
@@ -69,11 +78,25 @@ def create_user(db: db_dependency, create_user_request: CreateUserRequest):   # 
         is_active=True
     )
     db.add(create_user_model)
-    db.commit(  )
+    db.commit( )
 
 @router.post("/token")
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
-        return "Failed Authentication"
-    return "Successfully authenticated"
+        return "Failed Authentication"   # If authentication fails -> return "Failed Authentication"
+    token = create_access_token(user.username, user.id, timedelta(minutes=20)) # if authentication succeeds -> generate a JWT with username and user_id
+    return {"access_token": token, "token_type": "Bearer"} # Return the JWT as access_token with tiken_type "Bearer"
+
+
+'''
+sub: standard JWT claim (subject -> here we store username).
+id: user's unique ID
+exp: expiration time -> ensures token will become invalid after the set duration
+jwt.encode(..): creates the signed JWT string.
+'''
+def create_access_token(username: str, user_id: int, expires_delta: timedelta):
+    encode = {"sub": username, "id": user_id}
+    expires = datetime.now(timezone.utc) + expires_delta
+    encode.update({"exp": expires})
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
