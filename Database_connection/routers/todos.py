@@ -32,8 +32,15 @@ def read_all(user: authenticate_user,db: db_dependency):
 
 # GET todo by ID
 @router.get("/todo/{todo_id}", status_code=status.HTTP_200_OK)
-def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+def read_todo(user: authenticate_user, db: db_dependency, todo_id: int = Path(gt=0)):
+    if  user is None:
+        raise HTTPException(status_code=401, detail="Authentication")
+    todo_model = (
+        db.query(Todos)
+        .filter(Todos.id == todo_id)
+        .filter(Todos.Owner_id == user.get("id"))
+        .first()
+    )
     if todo_model is not None:
         return todo_model
     raise HTTPException(status_code=404, detail="Todo not found")
@@ -49,8 +56,12 @@ def create_todo(user: authenticate_user, db: db_dependency, todo_request: TodoRe
 
 # PUT: update existing todo
 @router.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-def update_todo(db: db_dependency, todo_request: TodoRequest, todo_id: int = Path(gt=0)):
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+def update_todo(user: authenticate_user,db: db_dependency, todo_request: TodoRequest, todo_id: int = Path(gt=0)):
+    todo_model = (db.query(Todos)
+                .filter(Todos.id == todo_id)
+                .filter(Todos.Owner_id == user.get("id"))
+                .first()
+                ) 
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo not found")
 
@@ -64,12 +75,19 @@ def update_todo(db: db_dependency, todo_request: TodoRequest, todo_id: int = Pat
 
 # DELETE: remove todo
 @router.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_todo(db: db_dependency, todo_id: int = Path(gt=0)):
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+def delete_todo(user: authenticate_user,db: db_dependency, todo_id: int = Path(gt=0)):
+    if user is None:
+        raise HTTPException(status_code=401, detiail="Authentication Failed")
+    todo_model = ( 
+        db.query(Todos)
+        .filter(Todos.id == todo_id)
+        .filter(Todos.Owner_id == user.get("id"))
+        .first()
+    )
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo not found")
 
-    db.query(Todos).filter(Todos.id == todo_id).delete()
+    db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get("id")).delete()
     db.commit()
 
 # Routers/todos.py
