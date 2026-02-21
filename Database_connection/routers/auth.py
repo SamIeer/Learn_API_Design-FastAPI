@@ -150,6 +150,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate user"
         )
-    
+
 # @router.post("/token", response_model=Token)
 # def login_for_access_token(from_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
