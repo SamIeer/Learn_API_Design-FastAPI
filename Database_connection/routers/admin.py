@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, status
-from pydantic import Basemodel, Field
+from pydantic import BaseModel, Field
 from starlette.status import HTTP_204_NO_CONTENT
 from routers import auth
 from sqlalchemy.orm import Session
