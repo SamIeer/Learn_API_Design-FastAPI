@@ -10,7 +10,7 @@ import models
 from models import Todos
 from database import sessionLocal, engine
 
-from routers import auth, todos# import the router we defined in routers/auth.py
+from routers import auth, todos, admin# import the router we defined in routers/auth.py
 
 app = FastAPI()
 
@@ -19,6 +19,7 @@ models.Base.metadata.create_all(bind=engine)
 # Include routers
 app.include_router(auth.router) # Tells FastaPI to include these routes inside the main application
 app.include_router(todos.router)
+app.include_router(admin.router)
 ''' 
 Creates all the databse tables defined in our models.py
 if the todos table does not exist, this line will generate it inside our Todolist,db file
