@@ -110,3 +110,79 @@ Even though db: Session = Depends(get_db) looks like it has a default,
 FastAPI treats dependencies as non-default parameters internally. 
 So they must come before optional query parameters.
 '''
+# Complete Example
+from typing import Annotated
+
+app = FastAPI()
+
+#1 Define dependency
+def get_db()
+    db = SessionLocal
+    try:
+        yield db
+    finally:
+        db.close()
+
+#2 Create type alias
+db_dependency = Annotated[Session, Depends(get_db)]
+
+#3 Use in endpoints with correct order
+@app.get("/users/{user_id}")
+async def get_user(
+    user_id: int,  # path parameter
+    db: db_dependency,  # Dependency 
+    include_posts: bool = False # 3. Query parameter
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.post("/users/")
+async def create_user(
+    db: db_dependency, # 1. Dependeccy (np path params here)
+    user_data: UserCreate # 2. Request body
+):
+    new_user = User(**user_data.dict())
+    db.add(new_user)
+    db.commit()
+    return new_user
+
+'''
+Key Takeaways
+1. Dependencies = Resuable code that FastAPI automatically injects
+2. Always put dependencies BEFORE optional parameters
+3. Use typw aliases(db_dependency) for cleaner code
+4. Dependencies run automatically before your endpoint function
+5. Order matters: Path -> Dependencies -> Query -> Body
+'''
+# Common patterns 
+# pattern 1: Chained Depends
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    # This dependency uses another dependency (get_db)
+    return verify_token(db, token)
+
+@app.get("/profile/")
+async def profile(user: User = Depends(get_current_user)):
+    # get_current_user automatically calls get_db
+    return user
+
+# Pattern 2: Optional Dependencies
+def get_optional_user(token: str = None):
+    if token:
+        return verify_token(token)
+    return None
+
+@app.get("/posts/")
+async def get_posts(user: User = Depends(get_optional_user)):
+    # user can be None if no token provided
+    if user:
+        return get_user_posts(user)
+    return get_public_posts()
