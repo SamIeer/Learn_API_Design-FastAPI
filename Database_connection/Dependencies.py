@@ -26,3 +26,11 @@ async def get_users(db: Session = Depends(get_db)):
 async def get_posts(db: Session = Depends(get_db)):
     return db.query(Post).all
 
+# Common Use Cases
+# -> Database Connection
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+@app.get("/users/")
+async def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
