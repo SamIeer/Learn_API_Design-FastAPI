@@ -28,8 +28,38 @@ Example: Call an API endpoint and make sure the correct solution is returned
 Pytest:
 Popular testing framework for python
 known for simplicity, scalablility and ability to handle both unit and integration tests
-TOp reasons to use Pytest:
+TOp reasons to use Pytest:s
 Simple and Flexible - Native Assertions
 Fixtures - Features setup and teardown
 Parameterized testing - Run same tests with different data
+'''
+
+# Getting started with Testing
+'''
+First Step 
+create a new directory on our project called test
+inside out rest directory, create a new file called __init__.py
+inside out test directoy, create abother file called test_example.py
+
+test_example.py
+Pytest will run all tests automatically that sit within files that have the name 'test' in them
+For our demo, all tests will be in test_example.py so Pytest can find them easily
+when we write tests for our application, we will create new tests from a new file that matches naminf convention of project 
+Example: todos.py will be testd test_todos.py
+
+Create our First unit test
+Write our first assertion test
+Asserion = statement that checks if a condition is true 
+if contition is true = test passes
+if condition is false = test fails 
+
+# test_example.py
+def test_equla_or_not():
+assert 3 == 3
+
+def test_equal_or_not_equal(): # fail
+   assert 3 == 3  # pass
+   assert 3 == 2  # fail
+   assert 3 != 1  # pass 
+   assert 3 != 3 # fail 
 '''
