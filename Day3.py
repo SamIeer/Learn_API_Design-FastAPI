@@ -64,3 +64,6 @@ def test_equal_or_not_equal(): # fail
    assert 3 != 3 # fail 
 '''  
 import pytest
+
+def equal_or_not():
+    assert 3 == 3 
