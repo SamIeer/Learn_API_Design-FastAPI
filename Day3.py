@@ -71,3 +71,13 @@ def equal_or_not():
 # What a test function looks like
 def test_something():
     assert something == expected
+
+# 
+from fastapi.testclient import TestClient
+from main import app 
+
+client = TestClient(app)
+def test_ping():
+    responmse = client.get("/ping")
+    assert responmse.status_code == 20
+    assert responmse.json() == {"message": "pong"}
