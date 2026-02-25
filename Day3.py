@@ -81,3 +81,51 @@ def test_ping():
     responmse = client.get("/ping")
     assert responmse.status_code == 20
     assert responmse.json() == {"message": "pong"}
+
+'''
+What you need to know beforoe writting tests 
+Step1 - Start with testing endpoints (easisedt entry point)
+step 2 - what should you test
+-> status code 
+-> Response body
+asser response.json()["name"] == "john"
+-> validation errors 
+response = client.post("/users",json={})
+assert response.status_code == 422
+
+Step 3 - Waht you should learn next 
+-> fixtures(very important)
+@pytest.fixture -> makes the code clean and scalable
+def client():
+return testclient(app)
+
+def test_ping(client):
+response = client.get("/ping")
+assert response.status_code == 200
+
+-> Testing dependencies(database, auth)
+Depends(get_db)
+
+What order should you learn in 
+phase 1
+basic endpint tests 
+status code assertions 
+json response asserions
+pytest basics
+
+phase 2
+fixtures
+parametrized test
+testing Post/Put with payload
+
+phase3
+'testing database (sqlite test db)
+dependency overrides
+mocking external services
+
+phase 4 (advanced)
+async testing 
+coverage reports 
+ci integration
+
+'''
