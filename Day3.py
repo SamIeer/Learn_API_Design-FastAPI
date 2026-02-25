@@ -67,3 +67,7 @@ import pytest
 
 def equal_or_not():
     assert 3 == 3 
+
+# What a test function looks like
+def test_something():
+    assert something == expected
