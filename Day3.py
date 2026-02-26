@@ -156,3 +156,18 @@ This route runs inside an event loop
 it can await async opeartions
 it won't block other requests while waiting
 '''
+
+'''
+The Event Loop 
+imagine a single worker that:
+keeps a list of tasks
+switches between them when one is waiting
+This is the event loop
+
+When should you use async def 
+use async def when:
+you're calling an async DB driver (like asyncpg)
+you're calling an async HTTP client (like httpx async)
+you're doing async file I/O
+You're awaiting anything
+'''
