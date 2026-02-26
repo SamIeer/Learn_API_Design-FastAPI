@@ -130,3 +130,29 @@ ci integration
 
 '''
 # probabalẏgp for async now 
+''''
+In python async is about non-blocking I/O not "making things magically faster"
+it lets your app:
+start a test 
+pause it while waiting 
+handle other requests during that wait 
+resume when ready
+
+How fastAPI is built on:
+asyncio 
+starlette
+uvicorn(ASGI server)
+ASGI supports async natively
+'''
+from fastapi import FastAPI
+app = FastAPI()
+@app.get("/")
+async def read_root():
+    return {"message":"hello world"}
+
+'''
+That async means:
+This route runs inside an event loop
+it can await async opeartions
+it won't block other requests while waiting
+'''
