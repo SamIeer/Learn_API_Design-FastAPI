@@ -171,3 +171,13 @@ you're calling an async HTTP client (like httpx async)
 you're doing async file I/O
 You're awaiting anything
 '''
+import httpx 
+@app.get("/external")
+async def call_api():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://api.example.com")
+    return response.json()
+# Notice:
+# async def 
+# await inside it 
+# that's proper async usage
